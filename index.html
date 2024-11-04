@@ -1,1 +1,301 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forest of Rods</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset default margins and paddings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body styling */
+    body, html {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(180deg, #0b0c10, #1f2833);
+      position: relative;
+      cursor: none; /* Hide default cursor for custom cursor effect */
+    }
+
+    /* Background layers */
+    .layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: bottom center;
+      background-size: cover;
+      pointer-events: none;
+    }
+
+    /* Sky layer */
+    .sky {
+      background: linear-gradient(180deg, #0b0c10, #1f2833);
+      z-index: 1;
+    }
+
+    /* Distant trees */
+    .trees-distant {
+      background-image: url('https://i.imgur.com/JrP9A2P.png'); /* Replace with your own image */
+      z-index: 2;
+      opacity: 0.5;
+      transform: translateZ(-3px) scale(4);
+    }
+
+    /* Mid-distance trees */
+    .trees-mid {
+      background-image: url('https://i.imgur.com/3bX8R2y.png'); /* Replace with your own image */
+      z-index: 3;
+      opacity: 0.7;
+      transform: translateZ(-2px) scale(3);
+    }
+
+    /* Foreground trees */
+    .trees-foreground {
+      background-image: url('https://i.imgur.com/3bX8R2y.png'); /* Replace with your own image */
+      z-index: 4;
+      opacity: 1;
+      transform: translateZ(-1px) scale(2);
+    }
+
+    /* Centered title container */
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      text-align: center;
+      color: #c5c6c7;
+      perspective: 1000px;
+    }
+
+    /* Title styling with interactive effects */
+    .title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 5rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      position: relative;
+      color: #66fcf1;
+      text-shadow: 0 0 20px rgba(102, 252, 241, 0.7), 0 0 30px rgba(102, 252, 241, 0.5);
+      transition: transform 0.1s ease-out, text-shadow 0.3s ease;
+    }
+
+    /* Glowing underline */
+    .title::after {
+      content: '';
+      display: block;
+      width: 150px;
+      height: 5px;
+      margin: 20px auto 0;
+      background: rgba(102, 252, 241, 0.5);
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(102, 252, 241, 0.7);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scaleX(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scaleX(1.5);
+        opacity: 1;
+      }
+    }
+
+    /* Floating particles (fireflies) */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(102, 252, 241, 0.8);
+      border-radius: 50%;
+      animation: sparkle 4s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(102, 252, 241, 0.6);
+    }
+
+    @keyframes sparkle {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+      }
+      50% {
+        transform: translateY(-50px) scale(1.5);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Positioning multiple particles */
+    .particle:nth-child(1) { top: 20%; left: 15%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 40%; left: 80%; animation-delay: 1s; }
+    .particle:nth-child(3) { top: 60%; left: 25%; animation-delay: 2s; }
+    .particle:nth-child(4) { top: 80%; left: 70%; animation-delay: 3s; }
+    .particle:nth-child(5) { top: 10%; left: 50%; animation-delay: 1.5s; }
+    .particle:nth-child(6) { top: 50%; left: 20%; animation-delay: 2.5s; }
+    .particle:nth-child(7) { top: 30%; left: 65%; animation-delay: 0.5s; }
+    .particle:nth-child(8) { top: 70%; left: 40%; animation-delay: 2s; }
+    .particle:nth-child(9) { top: 90%; left: 55%; animation-delay: 3.5s; }
+    .particle:nth-child(10) { top: 25%; left: 35%; animation-delay: 1.2s; }
+
+    /* Custom Cursor */
+    .custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 15px;
+      height: 15px;
+      background: rgba(102, 252, 241, 0.9);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease-out, background 0.3s ease, width 0.3s ease, height 0.3s ease;
+      z-index: 10;
+    }
+
+    /* Interactive hover effects on title */
+    .title:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 30px rgba(102, 252, 241, 0.9), 0 0 40px rgba(102, 252, 241, 0.7);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 3rem;
+      }
+
+      .title::after {
+        width: 100px;
+      }
+
+      .particle {
+        width: 6px;
+        height: 6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 2rem;
+      }
+
+      .title::after {
+        width: 80px;
+      }
+
+      .particle {
+        width: 4px;
+        height: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Background layers -->
+  <div class="layer sky"></div>
+  <div class="layer trees-distant"></div>
+  <div class="layer trees-mid"></div>
+  <div class="layer trees-foreground"></div>
+
+  <!-- Centered Title with Floating Particles -->
+  <div class="container">
+    <div class="title">Ali Bross</div>
+  </div>
+
+  <!-- Floating particles -->
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="customCursor"></div>
+
+  <!-- JavaScript for Interactive Effects -->
+  <script>
+    // Custom Cursor Movement
+    const cursor = document.getElementById('customCursor');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+    });
+
+    // Parallax Effect for Background Layers
+    const layers = document.querySelectorAll('.layer');
+    const container = document.querySelector('.container');
+
+    document.addEventListener('mousemove', (e) => {
+      const { innerWidth, innerHeight } = window;
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      const moveX = (mouseX / innerWidth) * 50;
+      const moveY = (mouseY / innerHeight) * 50;
+
+      // Parallax for background layers
+      layers.forEach(layer => {
+        const depth = layer.classList.contains('trees-distant') ? 20 :
+                      layer.classList.contains('trees-mid') ? 40 :
+                      layer.classList.contains('trees-foreground') ? 60 : 0;
+        layer.style.transform = `translate(${moveX * (depth / 100)}px, ${moveY * (depth / 100)}px)`;
+      });
+
+      // Parallax for title
+      const title = document.querySelector('.title');
+      title.style.transform = `translate(-50%, -50%) translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+    });
+
+    // Interactive Cursor Effect on Hovering Over Title
+    const titleElement = document.querySelector('.title');
+    titleElement.addEventListener('mouseenter', () => {
+      cursor.style.background = 'rgba(255, 255, 255, 0.9)';
+      cursor.style.width = '25px';
+      cursor.style.height = '25px';
+    });
+
+    titleElement.addEventListener('mouseleave', () => {
+      cursor.style.background = 'rgba(102, 252, 241, 0.9)';
+      cursor.style.width = '15px';
+      cursor.style.height = '15px';
+    });
+  </script>
+</body>
+</html>
